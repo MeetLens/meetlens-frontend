@@ -61,6 +61,15 @@ class _SummaryScreenState extends ConsumerState<SummaryScreen> {
     }
   }
 
+  void _retrySummary() {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    _loadSummary();
+  }
+
   @override
   Widget build(BuildContext context) {
     final meetingState = ref.watch(meetingProvider);
@@ -243,6 +252,14 @@ class _SummaryScreenState extends ConsumerState<SummaryScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _retrySummary,
+                        child: const Text('Try Again'),
+                      ),
+                    )
                   ],
 
                   const SizedBox(height: 32),
