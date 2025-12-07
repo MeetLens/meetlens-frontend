@@ -16,10 +16,15 @@ class AudioService {
   // 16kHz * 1 channel * 2 bytes/sample * 2 seconds = 64000 bytes
   static const int _chunkSize = 16000 * 2 * 2; 
 
-  /// Check and request microphone permission
+  /// Check and request microphone permission (handles permanent denials).
   Future<bool> requestPermission() async {
     final status = await Permission.microphone.request();
-    return status.isGranted;
+    if (status.isGranted) return true;
+    if (status.isPermanentlyDenied || status.isRestricted) {
+      // iOS will not re-prompt once denied; guide to Settings.
+      await openAppSettings();
+    }
+    return false;
   }
 
   /// Check if microphone permission is granted
