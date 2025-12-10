@@ -132,9 +132,15 @@ class MeetingNotifier extends StateNotifier<MeetingState> {
         stableTranscript: state.stableTranscript + message.text,
         unstableTranscript: '', // Clear unstable when stable arrives
       );
-    } else if (message is TranslationMessage) {
+    } else if (message is TranslationPartialMessage) {
       state = state.copyWith(
-        translationText: state.translationText + message.text + ' ',
+        partialTranslation: message.text,
+      );
+    } else if (message is TranslationStableMessage) {
+      final separator = state.stableTranslation.isEmpty ? '' : ' ';
+      state = state.copyWith(
+        stableTranslation: '${state.stableTranslation}$separator${message.text}',
+        partialTranslation: '',
       );
     } else if (message is ErrorMessage) {
       state = state.copyWith(

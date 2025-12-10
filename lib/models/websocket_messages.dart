@@ -107,17 +107,47 @@ class TranscriptStableMessage extends WebSocketMessage {
   }
 }
 
-/// Server → Client: Translation message
-class TranslationMessage extends WebSocketMessage {
+/// Server → Client: Translation partial message
+class TranslationPartialMessage extends WebSocketMessage {
+  final int chunkId;
   final String text;
 
-  TranslationMessage({
+  TranslationPartialMessage({
+    required super.sessionId,
+    required this.chunkId,
+    required this.text,
+  }) : super(type: 'translation_partial');
+
+  factory TranslationPartialMessage.fromJson(Map<String, dynamic> json) {
+    return TranslationPartialMessage(
+      sessionId: json['session_id'] as String,
+      chunkId: json['chunk_id'] as int,
+      text: json['text'] as String,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'session_id': sessionId,
+      'chunk_id': chunkId,
+      'text': text,
+    };
+  }
+}
+
+/// Server → Client: Translation stable message
+class TranslationStableMessage extends WebSocketMessage {
+  final String text;
+
+  TranslationStableMessage({
     required super.sessionId,
     required this.text,
-  }) : super(type: 'translation');
+  }) : super(type: 'translation_stable');
 
-  factory TranslationMessage.fromJson(Map<String, dynamic> json) {
-    return TranslationMessage(
+  factory TranslationStableMessage.fromJson(Map<String, dynamic> json) {
+    return TranslationStableMessage(
       sessionId: json['session_id'] as String,
       text: json['text'] as String,
     );
@@ -173,8 +203,13 @@ WebSocketMessage parseWebSocketMessage(String jsonString) {
       return TranscriptPartialMessage.fromJson(json);
     case 'transcript_stable':
       return TranscriptStableMessage.fromJson(json);
+    case 'translation_partial':
+      return TranslationPartialMessage.fromJson(json);
+    case 'translation_stable':
+      return TranslationStableMessage.fromJson(json);
     case 'translation':
-      return TranslationMessage.fromJson(json);
+      // Legacy fallback to treat old translation messages as stable
+      return TranslationStableMessage.fromJson(json);
     case 'error':
       return ErrorMessage.fromJson(json);
     default:

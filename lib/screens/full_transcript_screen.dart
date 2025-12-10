@@ -12,7 +12,7 @@ class FullTranscriptScreen extends ConsumerWidget {
 
   List<TranscriptItem> _generateTranscriptItems(MeetingState state) {
     final originals = TranscriptUtils.splitIntoSegments(state.stableTranscript);
-    final translations = TranscriptUtils.splitIntoSegments(state.translationText);
+    final translations = TranscriptUtils.splitIntoSegments(state.stableTranslation);
     final count = max(originals.length, translations.length);
 
     final now = DateTime.now();
@@ -33,7 +33,8 @@ class FullTranscriptScreen extends ConsumerWidget {
         TranscriptItem(
           id: 'current',
           original: state.unstableTranscript,
-          translation: '',
+          translation: state.partialTranslation,
+          isPartialTranslation: state.partialTranslation.isNotEmpty,
           timestamp: now,
         ),
       );
@@ -119,6 +120,12 @@ class FullTranscriptScreen extends ConsumerWidget {
                             item.translation,
                             style: MeetLensTypography.body.copyWith(
                               fontWeight: FontWeight.w500,
+                              color: item.isPartialTranslation
+                                  ? MeetLensColors.secondaryText
+                                  : null,
+                              fontStyle: item.isPartialTranslation
+                                  ? FontStyle.italic
+                                  : FontStyle.normal,
                             ),
                           ),
                         ),

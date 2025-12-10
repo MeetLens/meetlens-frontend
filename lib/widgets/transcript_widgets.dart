@@ -7,12 +7,14 @@ class TranscriptItem {
   final String original;
   final String translation;
   final DateTime timestamp;
+  final bool isPartialTranslation;
 
   TranscriptItem({
     required this.id,
     required this.original,
     required this.translation,
     required this.timestamp,
+    this.isPartialTranslation = false,
   });
 }
 
@@ -83,12 +85,19 @@ class LiveTranscriptRow extends StatelessWidget {
             // Bottom: Translation (larger, primary)
             Text(
               item.translation,
-              style: isCurrent
-                  ? baseTranslationStyle.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    )
-                  : baseTranslationStyle,
+              style: (isCurrent
+                      ? baseTranslationStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        )
+                      : baseTranslationStyle)
+                  .copyWith(
+                color: item.isPartialTranslation
+                    ? MeetLensColors.secondaryText
+                    : null,
+                fontStyle:
+                    item.isPartialTranslation ? FontStyle.italic : FontStyle.normal,
+              ),
             ),
           ],
         ),
