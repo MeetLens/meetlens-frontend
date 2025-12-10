@@ -12,7 +12,8 @@ class MeetingState {
   final String sessionId;
   final String unstableTranscript;
   final String stableTranscript;
-  final String translationText;
+  final String stableTranslation;
+  final String partialTranslation;
   final ConnectionStatus connectionStatus;
   final String? errorMessage;
 
@@ -20,7 +21,8 @@ class MeetingState {
     required this.sessionId,
     this.unstableTranscript = '',
     this.stableTranscript = '',
-    this.translationText = '',
+    this.stableTranslation = '',
+    this.partialTranslation = '',
     this.connectionStatus = ConnectionStatus.idle,
     this.errorMessage,
   });
@@ -29,7 +31,8 @@ class MeetingState {
     String? sessionId,
     String? unstableTranscript,
     String? stableTranscript,
-    String? translationText,
+    String? stableTranslation,
+    String? partialTranslation,
     ConnectionStatus? connectionStatus,
     String? errorMessage,
     bool clearUnstableTranscript = false,
@@ -41,7 +44,8 @@ class MeetingState {
           ? ''
           : (unstableTranscript ?? this.unstableTranscript),
       stableTranscript: stableTranscript ?? this.stableTranscript,
-      translationText: translationText ?? this.translationText,
+      stableTranslation: stableTranslation ?? this.stableTranslation,
+      partialTranslation: partialTranslation ?? this.partialTranslation,
       connectionStatus: connectionStatus ?? this.connectionStatus,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );

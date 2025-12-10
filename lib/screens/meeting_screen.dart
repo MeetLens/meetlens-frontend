@@ -51,7 +51,7 @@ class _MeetingScreenState extends ConsumerState<MeetingScreen> {
 
   List<TranscriptItem> _buildTranscript(MeetingState state) {
     final originals = TranscriptUtils.splitIntoSegments(state.stableTranscript);
-    final translations = TranscriptUtils.splitIntoSegments(state.translationText);
+    final translations = TranscriptUtils.splitIntoSegments(state.stableTranslation);
     final count = max(originals.length, translations.length);
     final now = DateTime.now();
     final items = <TranscriptItem>[];
@@ -73,7 +73,10 @@ class _MeetingScreenState extends ConsumerState<MeetingScreen> {
         TranscriptItem(
           id: 'live_current',
           original: state.unstableTranscript,
-          translation: translations.isNotEmpty ? translations.last : '',
+          translation: state.partialTranslation.isNotEmpty
+              ? state.partialTranslation
+              : (translations.isNotEmpty ? translations.last : ''),
+          isPartialTranslation: state.partialTranslation.isNotEmpty,
           timestamp: now,
         ),
       );
