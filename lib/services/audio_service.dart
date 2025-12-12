@@ -13,8 +13,9 @@ class AudioService {
   
   // Buffering
   final List<int> _audioBuffer = [];
-  // 16kHz * 1 channel * 2 bytes/sample * 2 seconds = 64000 bytes
-  static const int _chunkSize = 16000 * 2 * 2; 
+  // 16kHz * 1 channel * 2 bytes/sample * 1 second = 32000 bytes
+  // Reduced from 2 seconds to 1 second for better real-time responsiveness
+  static const int _chunkSize = 16000 * 2 * 1; 
 
   /// Check and request microphone permission (handles permanent denials).
   Future<bool> requestPermission() async {

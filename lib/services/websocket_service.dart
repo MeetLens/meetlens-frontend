@@ -18,9 +18,15 @@ class WebSocketService {
 
     try {
       final uri = Uri.parse(AppConfig.websocketUrl);
+      print('Attempting WebSocket connection to: $uri');
+
       _channel = WebSocketChannel.connect(uri);
       _messageController = StreamController<WebSocketMessage>.broadcast();
+
+      // Mark as connected immediately for sending messages
+      // The WebSocket protocol will handle buffering until connection is established
       _isConnected = true;
+      print('✓ WebSocket connection initiated');
 
       // Listen to incoming messages
       _channel!.stream.listen(
@@ -33,7 +39,10 @@ class WebSocketService {
           }
         },
         onError: (error) {
-          print('WebSocket error: $error');
+          print('✗ WebSocket error: $error');
+          print('  Connection details:');
+          print('  - URL: ${AppConfig.websocketUrl}');
+          print('  - Error type: ${error.runtimeType}');
           _isConnected = false;
           _messageController?.addError(error);
         },
@@ -45,7 +54,8 @@ class WebSocketService {
 
       return true;
     } catch (e) {
-      print('Error connecting to WebSocket: $e');
+      print('✗ Error connecting to WebSocket: $e');
+      print('  URL attempted: ${AppConfig.websocketUrl}');
       _isConnected = false;
       return false;
     }

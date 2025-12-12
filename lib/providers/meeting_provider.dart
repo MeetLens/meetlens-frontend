@@ -57,14 +57,17 @@ class MeetingNotifier extends StateNotifier<MeetingState> {
       );
 
       // Connect WebSocket
+      print('Starting WebSocket connection for session: $sessionId');
       final connected = await _websocketService.connect();
       if (!connected) {
+        print('WebSocket connection failed');
         state = state.copyWith(
           connectionStatus: ConnectionStatus.idle,
-          errorMessage: 'Failed to connect to server',
+          errorMessage: 'Failed to connect to server. Please check backend availability.',
         );
         return false;
       }
+      print('WebSocket connection initiated');
 
       // Start audio recording
       final recordingStarted = await _audioService.startRecording();
@@ -137,10 +140,10 @@ class MeetingNotifier extends StateNotifier<MeetingState> {
         partialTranslation: message.text,
       );
     } else if (message is TranslationStableMessage) {
-      final separator = state.stableTranslation.isEmpty ? '' : ' ';
+      // Append stable translation directly - backend handles spacing
       state = state.copyWith(
-        stableTranslation: '${state.stableTranslation}$separator${message.text}',
-        partialTranslation: '',
+        stableTranslation: state.stableTranslation + message.text,
+        partialTranslation: '', // Clear partial preview when stable arrives
       );
     } else if (message is ErrorMessage) {
       state = state.copyWith(
