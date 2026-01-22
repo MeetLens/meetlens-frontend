@@ -21,6 +21,16 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/meetlens_logo.png
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/meetlens_logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/meetlens_logo.png"
